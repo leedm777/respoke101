@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="connectionIssuesApp">
+<head>
+  <title>Respoke Training</title>
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <style>
+    .ng-cloak {
+      display: none !important;
+    }
+    .error {
+      color:red;
+    }
+  </style>
+</head>
+<body class="ng-cloak" ng-cloak ng-class="{{ bodyClass }}"
+      ng-controller="ConnectionIssuesCtrl">
+<div class="container">
+  <h1>Connection Issues Debug App</h1>
+  <h2>Controls</h2>
+  <div class="row">
+    <button class="btn btn-success" ng-click="connect()" ng-disabled="client != null">Connect</button>
+    <button class="btn btn-danger" ng-click="disconnect()" ng-disabled="client == null">Disconnect</button>
+    <button class="btn" ng-click="toggleTurn()">{{ disableTurn ? "Enable TURN" : "Disable TURN" }}</button>
+  </div>
+  <div class="row">
+    <pre class="col-md-12">State: {{ state }}
+{{ stats }}</pre>
+  </div>
+
+  <h2>Logs</h2>
+  <div class="row">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>When</th>
+        <th>What</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="log in logs" class="{{ log.className }}">
+        <td>{{ log.when }}</td>
+        <td><pre class="pre-scrollable {{ log.className }}">{{ log.what }}</pre></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script src="js/connect.js"></script>
+</body>
+</html>
