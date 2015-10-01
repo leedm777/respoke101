@@ -1,9 +1,11 @@
-var path = require("path");
-var webpack = require("webpack");
+var path = require('path');
+var webpack = require('webpack');
 var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
 module.exports = {
-  entry: './client/respoke-training.js',
+  entry: [
+    './client/respoke-training.js'
+  ],
   output:  {
     path: path.resolve(__dirname, 'webpack/'),
     filename: 'respoke-training.min.js',
