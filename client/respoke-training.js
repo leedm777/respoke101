@@ -23,21 +23,21 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
   var client = $scope.client = window.client = respoke.createClient();
 
   /*
-  //
-  // Dev mode. By setting `developmentMode` to `true`, we don't have to have
-  // a server to authenticate the client. The downside is that there is no
-  // security; anyone with your `appId` can connect to your application.
-  //
-  client.connect({
-    //baseURL: 'http://testing.digiumlabs.com',
-    appId: '642235ef-9647-4204-86f4-ec0e0ce7acb1',
-    endpointId: 'some endpoint',
-    developmentMode: true
-  }).then(function(connection) {
-    setState('connected');
-  }, function(err) {
-    $scope.err = err;
-  });
+   //
+   // Dev mode. By setting `developmentMode` to `true`, we don't have to have
+   // a server to authenticate the client. The downside is that there is no
+   // security; anyone with your `appId` can connect to your application.
+   //
+   client.connect({
+   //baseURL: 'http://testing.digiumlabs.com',
+   appId: '642235ef-9647-4204-86f4-ec0e0ce7acb1',
+   endpointId: 'some endpoint',
+   developmentMode: true
+   }).then(function(connection) {
+   setState('connected');
+   }, function(err) {
+   $scope.err = err;
+   });
    */
 
   //
@@ -52,10 +52,10 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
       }
 
       setState('connecting');
-      return client.connect({ token: res.data.token });
+      return client.connect({token: res.data.token});
     }).then(function() {
       setState('connected');
-      return client.setPresence({presence:'available'});
+      return client.setPresence({presence: 'available'});
     }).catch(onErr);
 
   //
@@ -115,7 +115,8 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
     delete message.message;
   };
   $scope.messageReady = function() {
-    return !!(client && client.isConnected() && message.endpointId && message.message);
+    return !!(client && client.isConnected() && message.endpointId && message.message
+    );
   };
 
 
@@ -159,11 +160,12 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
   }).catch(onErr);
 
 
-  $scope.globalMembers =[];
+  $scope.globalMembers = [];
   var refresh = $q.resolve();
+
   function refreshGlobalMembers() {
     refresh = refresh.then(function() {
-      return client.getGroup({id:'global'}).getMembers()
+      return client.getGroup({id: 'global'}).getMembers()
         .then(function(members) {
           $scope.globalMembers = _(members).map(function(member) {
             return member.endpointId
@@ -205,7 +207,7 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
       delete message.message;
 
       setState('sending group message');
-      client.getGroup({id:groupId}).sendMessage({message: msg})
+      client.getGroup({id: groupId}).sendMessage({message: msg})
         .then(function() {
           receiveMessage({
             timestamp: new Date(),
@@ -217,6 +219,59 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
         }).catch(onErr);
     };
   });
+
+  //
+  // Respoke is more than just messaging. With respoke, you can make
+  // peer-to-peer audio and video calls over WebRTC
+  //
+  $scope.call = null;
+
+  $scope.showVideos = function() {
+    return $scope.call && ($scope.call.incomingMediaStreams.hasVideo() || $scope.call.outgoingMediaStreams.hasVideo());
+  };
+
+  $scope.canCall = function() {
+    return !$scope.call && message.endpointId && !_.startsWith(message.endpointId, 'group:');
+  };
+
+  $scope.startVideoCall = function() {
+    setState('calling out');
+    client.startVideoCall({
+      endpointId: message.endpointId,
+      videoLocalElement: document.getElementById('local-video'),
+      videoRemoteElement: document.getElementById('remote-video'),
+      onConnect: function() {
+        setState('on call')
+      }
+    });
+  };
+
+  client.listen('call', function(evt) {
+    evt.call.listen('hangup', function() {
+      setState('hung up');
+      $scope.call = null;
+    });
+    $scope.call = evt.call;
+
+    if (evt.call.caller) {
+      return;
+    }
+    setState('receiving call');
+
+    // auto-answer, normally you would prompt for answer
+    evt.call.answer({
+      videoLocalElement: document.getElementById('local-video'),
+      videoRemoteElement: document.getElementById('remote-video'),
+      // Try using test media stream on answer side. FF allows this with the
+      // fake: true constraint. Chrome requires --use-fake-device-for-media-stream
+      // when launching the browser
+      constraints: {audio: true, video: true, fake: true},
+      onConnect: function() {
+        setState('on call')
+      }
+    });
+  });
+
 
   /*
    * To simplify the app, move the start of comment further up sections
