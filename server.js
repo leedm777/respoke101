@@ -4,6 +4,7 @@ var ngrok = require('ngrok');
 var request = require('request').defaults({json: true});
 var session = require('express-session');
 var uuid = require('uuid');
+var path = require('path');
 
 var chance = new Chance();
 
@@ -56,6 +57,10 @@ app.get('/token', function (req, res) {
         res.status(500).send({error: 'Timeout acquiring token'});
     }, 5000);
 });
+
+app.use(express.static(path.join(__dirname, 'webpack')));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 
 var server = app.listen(3000, '127.0.0.1', function () {
   var host = server.address().address;

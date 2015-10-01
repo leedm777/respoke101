@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="respokeTrainingApp">
+<head>
+  <title>Respoke Training</title>
+  <link rel="stylesheet"
+        href="/css/bootstrap.min.css">
+  <style>
+    .ng-cloak {
+      display: none !important;
+    }
+    .error {
+      color:red;
+    }
+  </style>
+  <script src="/respoke-training.min.js"></script>
+</head>
+<body class="ng-cloak" ng-cloak ng-class="{{ bodyClass }}"
+      ng-controller="RespokeTrainingCtrl">
+<div class="container">
+  <h1>Respoke Training</h1>
+
+  <h2>{{ state }}</h2>
+</div>
+</body>
+</html>

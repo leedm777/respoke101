@@ -1,12 +1,17 @@
 var path = require("path");
 var webpack = require("webpack");
+var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 
 module.exports = {
-  entry: './client/connect.js',
+  entry: './client/respoke-training.js',
   output:  {
     path: path.resolve(__dirname, 'webpack/'),
-    filename: 'connect.min.js',
-    publicPath: '/js'
+    filename: 'respoke-training.min.js',
+    publicPath: '/'
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
+  plugins: [
+    new ngAnnotatePlugin({add: true}),
+    new webpack.optimize.UglifyJsPlugin()
+  ]
 };
