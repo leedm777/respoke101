@@ -30,13 +30,10 @@ gulp.task("webpack-dev-server", function(callback) {
       app.use(require('./app'));
     }
   }).listen(3000, "localhost", function(err) {
-      console.log(arguments);
       if (err) throw new gutil.PluginError("webpack-dev-server", err);
-      // Server listening
       gutil.log("[webpack-dev-server]", "http://localhost:3000/webpack-dev-server/index.html");
 
-      // keep the server alive or continue?
-      // callback();
+      callback();
     });
 });
 

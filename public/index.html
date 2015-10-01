@@ -8,57 +8,108 @@
           href="/angular-csp.css">
     <script src="/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <!--
     <script src="/angular.min.js"></script>
     <script src="//cdn.respoke.io/respoke.min.js"></script>
+     -->
     <script src="/respoke-training.min.js"></script>
 </head>
 <body class="ng-cloak" ng-cloak ng-class="{{ bodyClass }}"
       ng-controller="RespokeTrainingCtrl">
 <div class="container">
     <h1>Respoke Training</h1>
+
     <div class="alert alert-danger" role="alert" ng-show="err">
         {{ err.message }}
     </div>
 
-    <form>
-        <div class="form-group">
-            <label for="state">state</label>
-            <input type="text" class="form-control" id="state" ng-value="state">
-        </div>
-        <div class="form-group">
-            <label for="endpointId">endpointId</label>
-            <input type="text" class="form-control" id="endpointId" ng-value="client && client.endpointId">
-        </div>
-        <div class="form-group">
-            <label for="connectionId">connectionId</label>
-            <input type="text" class="form-control" id="connectionId" ng-value="client && client.connectionId">
-        </div>
-    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>state</th>
+            <th>endpointId</th>
+            <th>connectionId</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <input type="text" class="form-control" id="state"
+                       ng-value="state" readonly select-all-on-click>
+            </td>
+            <td>
+                <input type="text" class="form-control" id="endpointId"
+                       ng-value="client && client.endpointId" readonly
+                       select-all-on-click>
+            </td>
+            <td>
+                <input type="text" class="form-control" id="connectionId"
+                       ng-value="client && client.connectionId" readonly
+                       select-all-on-click>
+            </td>
+            <td>
+                <button class="btn btn-danger" type="submit" ng-click="disconnect()" ng-show="disconnect" ng-disabled="!client || !client.isConnected()">Disconnect</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-    <div ng-show="canSendMessage && canSendMessage()">
-        <form>
-            <div class="form-group">
-                <label class="sr-only" for="sendMessageTo">To</label>
-                <input type="text" class="form-control" id="sendMessageTo" placeholder="To" ng-model="message.endpointId">
-            </div>
-            <div class="form-group">
-                <label class="sr-only" for="sendMessageToConnection">To connection</label>
-                <input type="text" class="form-control" id="sendMessageToConnection" placeholder="To Connection" ng-model="message.connectionId">
-            </div>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea class="form-control" id="message" ng-model="message.message"></textarea>
-            </div>
-            <button type="button" class="btn btn-primary" ng-click="sendMessage()" ng-disabled="!messageReady()">Send</button>
-        </form>
+    <div ng-show="globalGroup">
 
+    </div>
+
+    <div ng-show="!!message">
+        <h2>Peer to peer messages</h2>
         <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>When</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Message</th>
+            </tr>
+            </thead>
+            <tbody>
             <tr ng-repeat="msg in inbox">
                 <td>{{ msg.timestamp }}</td>
                 <td>{{ msg.endpointId }}</td>
+                <td>{{ msg.recipient }}</td>
                 <td>{{ msg.message }}</td>
             </tr>
+            </tbody>
         </table>
+
+        <form>
+            <select class="form-control" ng-show="globalMembers" ng-model="message.endpointId">
+                <option value="">Select someone to send a message...</option>
+                <option ng-repeat="member in globalMembers" value="{{ member }}">{{ member }}</option>
+                <option ng-repeat="group in groups" value="group:{{ group }}">{{ group }}</option>
+            </select>
+
+            <div ng-show="!globalMembers">
+                <div class="form-group">
+                    <label class="sr-only" for="sendMessageTo">To</label>
+                    <input type="text" class="form-control" id="sendMessageTo"
+                           placeholder="To" ng-model="message.endpointId">
+                </div>
+                <div class="form-group" ng-show="message.connectionId != null">
+                    <label class="sr-only" for="sendMessageToConnection">To
+                        connection</label>
+                    <input type="text" class="form-control"
+                           id="sendMessageToConnection" placeholder="To Connection"
+                           ng-model="message.connectionId">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea class="form-control" id="message"
+                          ng-model="message.message"></textarea>
+            </div>
+            <button type="button" class="btn btn-primary"
+                    ng-click="sendMessage()" ng-disabled="!messageReady()">Send
+            </button>
+        </form>
+
     </div>
 </div>
 </body>

@@ -13,7 +13,7 @@ module.exports = {
   },
   devtool: 'source-map',
   plugins: [
-    new ngAnnotatePlugin({add: true}),
-    new webpack.optimize.UglifyJsPlugin()
+    //new ngAnnotatePlugin({add: true}),
+    //new webpack.optimize.UglifyJsPlugin()
   ]
 };
