@@ -61,7 +61,7 @@
     </table>
 
     <div ng-show="!!message">
-        <div ng-show="showVideos()">
+        <div class="videos" ng-show="showVideos()">
             <video id="local-video"></video>
             <video id="remote-video"></video>
         </div>
@@ -85,7 +85,7 @@
                     ng-click="startVideoCall()" ng-disabled="!canCall()" ng-show="!!startVideoCall">Call
             </button>
             <button type="button" class="btn btn-danger"
-                    ng-click="call.hangup()" ng-show="call">Hangup</button>
+                    ng-click="call.hangup()" ng-show="call" ng-disabled="false">Hangup</button>
         </form>
         <form>
 

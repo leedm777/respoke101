@@ -1,9 +1,22 @@
 #remote-video {
     width: 320px;
-    height: auto
+    height: auto;
 }
 
 #local-video {
     width: 80px;
-    height: auto
+    height: auto;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.videos {
+    position: relative;
+    width: 320px;
+}
+
+/* bootstrap select looks like junk in FF w/o this */
+select {
+    -moz-appearance: none;
 }
