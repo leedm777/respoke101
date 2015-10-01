@@ -1,9 +1,9 @@
 var gulp = require('gulp');
 var webpack = require('webpack');
-var gutil = require("gulp-util");
-var WebpackDevServer = require("webpack-dev-server");
+var gutil = require('gulp-util');
+var WebpackDevServer = require('webpack-dev-server');
 
-var webpackConfig = {};
+var webpackConfig = require('./webpack.config.js');
 
 // The development server (the recommended option for development)
 gulp.task("default", ["webpack-dev-server"]);
@@ -14,8 +14,7 @@ gulp.task('webpack', function(done) {
     gutil.log("[webpack]", stats.toString({
       // output options
     }));
-    callback();
-
+    done();
   })
 });
 
@@ -25,7 +24,7 @@ gulp.task("webpack-dev-server", function(callback) {
 
   new WebpackDevServer(compiler, {
     // server and middleware options
-  }).listen(8080, "localhost", function(err) {
+  }).listen(3000, "localhost", function(err) {
       if (err) throw new gutil.PluginError("webpack-dev-server", err);
       // Server listening
       gutil.log("[webpack-dev-server]", "http://localhost:8080/webpack-dev-server/index.html");
