@@ -48,6 +48,12 @@ app.get('/token', function(req, res) {
       return;
     }
 
+    if (postRes.statusCode !== 200) {
+      console.error('Error requesting token', postRes.body.error);
+      res.status(500).send({error: 'Could not acquire token'});
+      return;
+    }
+
     res.send({
       token: postRes.body.tokenId,
       endpointId: postRes.body.endpointId,
