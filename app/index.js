@@ -49,7 +49,7 @@ app.get('/token', function(req, res) {
     }
 
     if (postRes.statusCode !== 200) {
-      console.error('Error requesting token', postRes.body.error);
+      console.error('Error requesting token', JSON.stringify(postRes, null, 2));
       res.status(500).send({error: 'Could not acquire token'});
       return;
     }

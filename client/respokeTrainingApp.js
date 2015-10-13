@@ -4,6 +4,7 @@ var angular = require('angular');
 
 var app = module.exports = angular.module('respokeTrainingApp', []);
 
+// from http://stackoverflow.com/a/32501584/115478
 app.directive('selectAllOnClick', [function() {
   return {
     restrict: 'A',

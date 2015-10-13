@@ -61,9 +61,16 @@
     </table>
 
     <div ng-show="!!message">
+        <div ng-show="!!callAsterisk">
+            <button type="button" class="btn btn-primary"
+                    ng-click="callAsterisk()">Call Asterisk</button>
+        </div>
         <div class="videos" ng-show="showVideos()">
             <video id="local-video"></video>
             <video id="remote-video"></video>
+            <div class="editor" ng-show="!!filename">
+
+            </div>
         </div>
         <form class="form-inline">
             <div class="form-group">
@@ -114,7 +121,7 @@
             </button>
         </form>
 
-        <h2>Peer to peer messages</h2>
+        <h2>Inbox</h2>
         <table class="table table-striped table-hover">
             <thead>
             <tr>

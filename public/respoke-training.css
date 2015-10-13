@@ -20,3 +20,25 @@
 select {
     -moz-appearance: none;
 }
+
+body.dragOver #file-drop {
+    background:gray;
+    display:block;
+    height: 100%;
+    width: 100%;
+    font-size: xx-large;
+    opacity:0.9;
+} /* During drag */
+
+.drop-text {
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px; /* margin is -0.5 * dimension */
+    margin-top: -25px;
+    text-align: center;
+}
+
+body #file-drop{z-index:1000;position:fixed;top:0;left:0;width:100%;height:100%;display:none;} /* No drag */

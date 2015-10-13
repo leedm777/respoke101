@@ -22,24 +22,6 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
 
   var client = $scope.client = window.client = respoke.createClient();
 
-  /*
-   //
-   // Dev mode. By setting `developmentMode` to `true`, we don't have to have
-   // a server to authenticate the client. The downside is that there is no
-   // security; anyone with your `appId` can connect to your application.
-   //
-   client.connect({
-   //baseURL: 'http://testing.digiumlabs.com',
-   appId: '642235ef-9647-4204-86f4-ec0e0ce7acb1',
-   endpointId: 'some endpoint',
-   developmentMode: true
-   }).then(function(connection) {
-   setState('connected');
-   }, function(err) {
-   $scope.err = err;
-   });
-   */
-
   //
   // Brokered auth. Your server is responsible for creating tokens for
   // clients to use to connect with Respoke. This keeps your app credentials
@@ -52,23 +34,13 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
       }
 
       setState('connecting');
-      return client.connect({token: res.data.token});
+      return client.connect({token: res.data.token, baseURL: 'http://testing.digiumlabs.com:2000'});
     }).then(function() {
       setState('connected');
       return client.setPresence({presence: 'available'});
     }).catch(onErr);
 
-  //
-  // Sometimes, and application needs an explicit disconnect. For that, there's
-  // `client.disconnect()`.
-  //
-  $scope.disconnect = function() {
-    connect.then(function() {
-      return client.disconnect();
-    }).then(function() {
-      setState('disconnected');
-    }).catch(onErr);
-  };
+  /*
 
   //
   // Peer to peer messages. The client receives a `message` event on incoming
@@ -90,8 +62,9 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
   client.listen('message', function(evt) {
     evt.message.timestamp = new Date(evt.message.timestamp);
     receiveMessage(evt.message);
-    setState('got client message ' + JSON.stringify(evt));
+    setState('got client message');
   });
+
   // To send a message
   var message = $scope.message = {
     endpointId: '',
@@ -104,12 +77,6 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
 
     client.sendMessage(send)
       .then(function() {
-        receiveMessage({
-          timestamp: new Date(),
-          recipient: message.endpointId,
-          endpointId: client.endpointId,
-          message: send.message
-        });
         setState('sent message');
       }).catch(onErr);
     delete message.message;
@@ -167,6 +134,7 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
     refresh = refresh.then(function() {
       return client.getGroup({id: 'global'}).getMembers()
         .then(function(members) {
+          console.log(JSON.stringify(members, null, 2));
           $scope.globalMembers = _(members).map(function(member) {
             return member.endpointId
           }).without(client.endpointId).uniq().valueOf();
@@ -178,6 +146,16 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
         }).catch(onErr);
     });
   }
+
+  // So we can generate some leave events, here's a disconnect button
+  $scope.disconnect = function() {
+    connect.then(function() {
+      return client.disconnect();
+    }).then(function() {
+      setState('disconnected');
+    }).catch(onErr);
+  };
+
 
   //
   // Not only that, often we want to be able to send messages to groups of
@@ -209,12 +187,6 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
       setState('sending group message');
       client.getGroup({id: groupId}).sendMessage({message: msg})
         .then(function() {
-          receiveMessage({
-            timestamp: new Date(),
-            recipient: groupId,
-            endpointId: client.endpointId,
-            message: msg
-          });
           setState('group message sent');
         }).catch(onErr);
     };
@@ -234,7 +206,7 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
     return !$scope.call && message.endpointId && !_.startsWith(message.endpointId, 'group:');
   };
 
-  $scope.startVideoCall = function() {
+  var startVideoCall = $scope.startVideoCall = function() {
     setState('calling out');
     client.startVideoCall({
       endpointId: message.endpointId,
@@ -272,8 +244,12 @@ respokeTrainingApp.controller('RespokeTrainingCtrl', function($scope, $http, $ti
     });
   });
 
+  $scope.callAsterisk = function() {
+    client.startAudioCall({
+      endpointId: 'asterisk'
+    })
+  };
 
-  /*
    * To simplify the app, move the start of comment further up sections
    * of code. The HTML should disable features that are commented out.
    */

@@ -29,7 +29,7 @@ gulp.task("webpack-dev-server", function(callback) {
     setup: function(app) {
       app.use(require('./app'));
     }
-  }).listen(3000, "localhost", function(err) {
+  }).listen(3000, "0.0.0.0", function(err) {
       if (err) throw new gutil.PluginError("webpack-dev-server", err);
       gutil.log("[webpack-dev-server]", "http://localhost:3000/webpack-dev-server/index.html");
 
